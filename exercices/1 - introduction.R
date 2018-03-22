@@ -6,6 +6,8 @@ matrix_b = t(data.matrix(dataframe, rownames.force = NA))
 
 ## Exercice 3
 dummy_matmult <- function(A, B){
+  if(ncol(A) != nrow(B)) return(FALSE)
+  
   C  = matrix(0, nrow = nrow(A), ncol = ncol(B))
   for(i in 1:nrow(A))
   {
@@ -21,7 +23,9 @@ dummy_matmult <- function(A, B){
   return(C)
 }
 
+
 dummy_matmult(matrix_a, matrix_b)
+# comparison
 matrix_a %*% matrix_b
 
 ## Exercice 4
@@ -33,7 +37,8 @@ dummy_kernel <- function(A){
 }
 ### the algorithm
 dummy_determinant <-function(A){
-  
+  if(ncol(A) != nrow(A)) return(FALSE)
+  if(nrow(A) == 1) return(A[1])
   if(nrow(A) == 2){
     return (dummy_kernel(A))
   }
@@ -54,6 +59,7 @@ dummy_determinant <-function(A){
 }
 
 dummy_determinant(matrix_a)
+#comparison
 as.integer(det(matrix_a))
 
 ## Exercice 5
@@ -75,12 +81,12 @@ size = 1:tests
 dummy = c()
 builtin = c()
 
-for(i in 1:tests){
+for(i in seq(1, tests, 25)){
   dummy = c(dummy, system.time(dummy_random_matrix(i,i))[1])
   builtin = c(builtin, system.time(matrix(rnorm(i*i),i,i))[1])
 }
 
-bench <- data.frame(size=size, dummy=dummy, builtin=builtin)
+bench <- data.frame(size=seq(1, tests, 25), dummy=dummy, builtin=builtin)
 plot(bench$dummy, type="o", col="blue")
 lines(bench$builtin,type="o", col="red")
 legend(1,1, c("dummy","builtin"), cex=0.8, col=c("blue","red"), pch=21:22, lty=1:2)
